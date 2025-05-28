@@ -10,9 +10,22 @@
 		067FF7902D2CCE0300B0B9CC /* ar-body-tracking-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ar-body-tracking-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		067FF7A22D2CCF1F00B0B9CC /* Exceptions for "ar-body-tracking-ios" folder in "ar-body-tracking-ios" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 067FF78F2D2CCE0300B0B9CC /* ar-body-tracking-ios */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		067FF7922D2CCE0300B0B9CC /* ar-body-tracking-ios */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				067FF7A22D2CCF1F00B0B9CC /* Exceptions for "ar-body-tracking-ios" folder in "ar-body-tracking-ios" target */,
+			);
 			path = "ar-body-tracking-ios";
 			sourceTree = "<group>";
 		};
@@ -255,6 +268,8 @@
 				DEVELOPMENT_TEAM = M7DLEYBF3T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ar-body-tracking-ios/Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs access to the camera to enable Augmented Reality features";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -284,6 +299,8 @@
 				DEVELOPMENT_TEAM = M7DLEYBF3T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ar-body-tracking-ios/Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs access to the camera to enable Augmented Reality features";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
