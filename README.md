@@ -87,7 +87,7 @@ An iOS application that uses **ARKit’s Motion Capture** technology to track hu
 └── README.md
 ```
 
-##📍 Known Limitations
+## 📍 Known Limitations
 - Works best in well-lit environments.
 - Only supports full-body tracking (requires full person in camera frame).
 - Limited to devices with body tracking support.
