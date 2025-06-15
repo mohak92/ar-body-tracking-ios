@@ -50,9 +50,9 @@ An iOS application that uses **ARKit’s Motion Capture** technology to track hu
 
 ## 📂 Project Structure
 ```
+.
 ├── ar-body-tracking-ios
-│   ├── App
-│   │   └── ar_body_tracking_iosApp.swift
+│   ├── ar_body_tracking_iosApp.swift
 │   ├── ARViewContainer.swift
 │   ├── Assets.xcassets
 │   │   ├── AccentColor.colorset
@@ -60,16 +60,15 @@ An iOS application that uses **ARKit’s Motion Capture** technology to track hu
 │   │   ├── AppIcon.appiconset
 │   │   │   └── Contents.json
 │   │   └── Contents.json
+│   ├── BodySkeleton.swift
+│   ├── Bones.swift
+│   ├── ContentView.swift
 │   ├── Info.plist
-│   ├── Model
-│   │   ├── Bones.swift
-│   │   ├── SkeletonBone.swift
-│   │   └── SkeletonJoint.swift
 │   ├── Preview Content
 │   │   └── Preview Assets.xcassets
 │   │       └── Contents.json
-│   └── View
-│       └── ContentView.swift
+│   ├── SkeletonBone.swift
+│   └── SkeletonJoint.swift
 ├── ar-body-tracking-ios.xcodeproj
 │   ├── project.pbxproj
 │   ├── project.xcworkspace
