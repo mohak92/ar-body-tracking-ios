@@ -9,48 +9,47 @@ import SwiftUI
 import ARKit
 import RealityKit
 
-private var bodySkeleton: BodySkeleton?
-private let bodySkeletonAnchor = AnchorEntity()
+class BodyTrackingSessionDelegate: NSObject, ARSessionDelegate {
+    static var bodySkeleton: BodySkeleton?
+    static let bodySkeletonAnchor = AnchorEntity()
 
-struct ARViewContainer: UIViewRepresentable {
-    typealias UIViewType = ARView
-    
-    func makeUIView(context: Context) -> ARView {
-        let arView = ARView(frame: .zero, cameraMode: .ar, automaticallyConfigureSession: true)
-        
-        arView.setupForBodyTracking()
-        arView.scene.addAnchor(bodySkeletonAnchor)
-        
-        return arView
-    }
-    
-    func updateUIView(_ uiView: ARView, context: Context) {
-        
-    }
-    
-}
-
-extension ARView: ARSessionDelegate {
-    func setupForBodyTracking() {
-        let configuration = ARWorldTrackingConfiguration()
-        self.session.run(configuration)
-        
-        self.session.delegate = self
-    }
-    
-    public func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
+    func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
         for anchor in anchors {
             if let bodyAnchor = anchor as? ARBodyAnchor {
-                if let skeleton = bodySkeleton {
-                    // BodySkeleton already exists, update all joints and bones
+                if let skeleton = Self.bodySkeleton {
                     skeleton.update(with: bodyAnchor)
                 } else {
-                    // BodySkeleton doesn't yet exist. This means a body has been detected for the first time.
-                    // Create bodySkeleton entity and add it to the bodySkeletonAnchor
-                    bodySkeleton = BodySkeleton(for: bodyAnchor)
-                    bodySkeletonAnchor.addChild(bodySkeleton!)
+                    Self.bodySkeleton = BodySkeleton(for: bodyAnchor)
+                    Self.bodySkeletonAnchor.addChild(Self.bodySkeleton!)
                 }
             }
         }
+    }
+}
+
+struct ARViewContainer: UIViewRepresentable {
+    typealias UIViewType = ARView
+
+    func makeCoordinator() -> BodyTrackingSessionDelegate {
+        BodyTrackingSessionDelegate()
+    }
+    
+    func makeUIView(context: Context) -> ARView {
+        let arView = ARView(frame: .zero, cameraMode: .ar, automaticallyConfigureSession: true)
+
+        guard ARBodyTrackingConfiguration.isSupported else {
+            print("Body tracking is not supported on this device.")
+            return arView
+        }
+
+        let configuration = ARBodyTrackingConfiguration()
+        arView.session.run(configuration)
+        arView.session.delegate = context.coordinator
+        arView.scene.addAnchor(BodyTrackingSessionDelegate.bodySkeletonAnchor)
+
+        return arView
+    }
+
+    func updateUIView(_ uiView: ARView, context: Context) {
     }
 }

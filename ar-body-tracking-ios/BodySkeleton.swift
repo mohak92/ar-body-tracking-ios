@@ -49,10 +49,7 @@ class BodySkeleton: Entity {
             joints[jointName] = jointEntity
             self.addChild(jointEntity)
         }
-        
-        // TODO FIX: A little hacky - we call update to set joint positions so we can properly calculate length between joints for the bones.
-        self.update(with: bodyAnchor)
-        
+
         for bone in Bones.allCases {
             guard let skeletonBone = createSkeletonBone(bone: bone, bodyAnchor: bodyAnchor)
             else { continue }
@@ -69,15 +66,15 @@ class BodySkeleton: Entity {
     }
     
     func update(with bodyAnchor: ARBodyAnchor) {
-        // Align BodySkeleton with bodyAnchor (root at hipJoint)
-        self.setTransformMatrix(bodyAnchor.transform, relativeTo: nil)
-        
-        // Update transform for each tracked jointEntity
+        let rootPosition = simd_make_float3(bodyAnchor.transform.columns.3)
+
         for jointName in ARSkeletonDefinition.defaultBody3D.jointNames {
             if let jointEntity = joints[jointName],
                let jointEntityTransform = bodyAnchor.skeleton.modelTransform(for: ARSkeleton.JointName(rawValue: jointName)) {
                 
-                jointEntity.setTransformMatrix(jointEntityTransform, relativeTo: self)
+                let jointEntityOffsetFromRoot = simd_make_float3(jointEntityTransform.columns.3)
+                jointEntity.position = jointEntityOffsetFromRoot + rootPosition
+                jointEntity.orientation = Transform(matrix: jointEntityTransform).rotation
             }
         }
         
@@ -102,21 +99,23 @@ class BodySkeleton: Entity {
     }
     
     private func createSkeletonBone(bone: Bones, bodyAnchor: ARBodyAnchor) -> SkeletonBone? {
-        guard let fromJointEntity = joints[bone.jointFromName],
-              let toJointEntity = joints[bone.jointToName]
-        else {
-            return nil
-        }
+        guard let fromJointEntityTransform = bodyAnchor.skeleton.modelTransform(for: ARSkeleton.JointName(rawValue: bone.jointFromName)),
+              let toJointEntityTransform = bodyAnchor.skeleton.modelTransform(for: ARSkeleton.JointName(rawValue: bone.jointToName))
+        else { return nil }
         
-        // Get world-space positions
-        let fromPosition = fromJointEntity.position(relativeTo: nil)
-        let toPosition = toJointEntity.position(relativeTo: nil)
+        let rootPosition = simd_make_float3(bodyAnchor.transform.columns.3)
         
-        // Create skeleton joints
-        let fromJoint = SkeletonJoint(name: bone.jointFromName, position: fromPosition)
-        let toJoint = SkeletonJoint(name: bone.jointToName, position: toPosition)
+        let jointFromEntityOffsetFromRoot = simd_make_float3(fromJointEntityTransform.columns.3) // relative to root (i.e hipint)
         
-        // Create and return skeleton bone
+        let jointFromEntityPosition = jointFromEntityOffsetFromRoot + rootPosition // relative to world refrence frame
+        
+        let jointToEntityOffsetFromRoot = simd_make_float3(toJointEntityTransform.columns.3) // relative to root (i.e hipint)
+        
+        let jointToEntityPosition = jointToEntityOffsetFromRoot + rootPosition // relative to world refrence frame
+        
+        let fromJoint = SkeletonJoint(name: bone.jointFromName, position: jointFromEntityPosition)
+        let toJoint = SkeletonJoint(name: bone.jointToName, position: jointToEntityPosition)
+        
         return SkeletonBone(fromJoint: fromJoint, toJoint: toJoint)
     }
     
